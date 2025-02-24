@@ -23,14 +23,6 @@ async def concat_message(partial_gen: AsyncGenerator[str, None]) -> str:
         concated += partial
     return concated
 
-from fastapi import HTTPException
-import asyncio
-from openai import OpenAI
-
-from fastapi import HTTPException
-import asyncio
-import openai  # Ensure you're using the official OpenAI Python library
-
 async def openai_full_message(request: str) -> str:
     """
     Asynchronously fetch a full response from OpenAI's ChatCompletion API.
