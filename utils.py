@@ -9,18 +9,9 @@ import os
 from openai import OpenAI
 
 async def concat_message(partial_gen: AsyncGenerator[str, None]) -> str:
-    """
-    Concatenate messages from an async generator of partials.
-
-    Args:
-        partial_gen (AsyncGenerator[str, None]): An asynchronous generator yielding partial message strings.
-
-    Returns:
-        str: The concatenated message.
-    """
-    concated = ""
+    concated = ""  # Each function call gets a separate `concated`
     async for partial in partial_gen:
-        concated += partial
+        concated += partial  # No shared state
     return concated
 
 async def openai_full_message(request: str) -> str:
