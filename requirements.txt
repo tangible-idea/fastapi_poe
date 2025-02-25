@@ -1,5 +1,6 @@
 pydantic
 fastapi==0.104.1
+fastapi-sse
 instagrapi==2.0.0
 httpx==0.25.1
 httpx_sse==0.3.1
