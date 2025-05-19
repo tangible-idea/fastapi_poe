@@ -3,6 +3,7 @@ from instagrapi import Client
 from tinydb import TinyDB, Query
 import logging
 import json
+import os
 
 class ClientStorage:
     logger = logging.getLogger("uvicorn.default")
