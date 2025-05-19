@@ -8,7 +8,7 @@ class ClientStorage:
     logger = logging.getLogger("uvicorn.default")
 
     if not os.path.exists('db.json'):
-    open('db.json', 'w').close()  # 없으면 빈 파일 생성
+        open('db.json', 'w').close()  # 없으면 빈 파일 생성
 
     db = TinyDB('./db.json')
 
