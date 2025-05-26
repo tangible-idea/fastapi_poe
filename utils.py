@@ -1,8 +1,8 @@
 # utils.py
 
 import asyncio
-from typing import AsyncGenerator
-from fastapi_poe.types import ProtocolMessage
+from typing import AsyncGenerator, Optional
+from fastapi_poe.types import ProtocolMessage, ToolDefinition
 from fastapi_poe.client import get_bot_response
 from fastapi import HTTPException
 import os
@@ -57,7 +57,11 @@ async def openai_full_message(request: str) -> str:
     
 
 
-async def get_poe_partial_messages(messages, bot_name: str, api_key: str) -> AsyncGenerator[str, None]:
+# 가짜 실행 함수 (실제로는 사용 안 함)
+def fake_tool(**kwargs):
+    return kwargs  # 아무거나 반환 (실행되지 않음)
+
+async def get_poe_partial_messages(messages, bot_name: str, api_key: str, tools: Optional[list[ToolDefinition]] = None) -> AsyncGenerator[str, None]:
     """
     Fetch partial messages from fastapi_poe's get_bot_response.
 
@@ -65,9 +69,12 @@ async def get_poe_partial_messages(messages, bot_name: str, api_key: str) -> Asy
         messages (list): List of ProtocolMessage objects.
         bot_name (str): Name of the bot to interact with.
         api_key (str): API key for authentication.
+        tools (Optional[list[ToolDefinition]]): List of tools to be used by the bot.
 
     Yields:
         str: Partial message content.
     """
-    async for partial in get_bot_response(messages=messages, bot_name=bot_name, api_key=api_key):
+    async for partial in get_bot_response(messages=messages, bot_name=bot_name, api_key=api_key, tools=tools, tool_executables=[fake_tool]):
         yield partial.text
+            
+    
