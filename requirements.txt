@@ -1,4 +1,4 @@
-pydantic
+pydantic==1.10.9
 fastapi==0.104.1
 instagrapi==2.0.0
 httpx==0.25.1
@@ -12,3 +12,4 @@ uvicorn==0.24.0.post1
 Pillow==10.0.1
 python-multipart==0.0.6
 openai
+sse-starlette==2.3.5
