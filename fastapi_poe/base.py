@@ -20,7 +20,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sse_starlette.event import ServerSentEvent
+from sse_starlette.sse import ServerSentEvent  # Fixed import path
 from sse_starlette.sse import EventSourceResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import Message
@@ -571,10 +571,10 @@ class PoeBot:
                     concatenated_content = (
                         f"{concatenated_content}\n\n{image_attachment_content}"
                     )
-        modified_last_message = last_message.model_copy(
+        modified_last_message = last_message.copy(
             update={"content": concatenated_content}
         )
-        modified_query = query_request.model_copy(
+        modified_query = query_request.copy(
             update={"query": query_request.query[:-1] + [modified_last_message]}
         )
         return modified_query
@@ -635,7 +635,7 @@ class PoeBot:
                     image_attachment_messages.append(
                         ProtocolMessage(role="user", content=image_attachment_content)
                     )
-        modified_query = query_request.model_copy(
+        modified_query = query_request.copy(
             update={
                 "query": query_request.query[:-1]
                 + text_attachment_messages
@@ -676,7 +676,7 @@ class PoeBot:
                         new_attachments.append(attachment)
 
                 new_messages.append(
-                    prev_message.model_copy(
+                    prev_message.copy(
                         update={"content": new_content, "attachments": new_attachments}
                     )
                 )
@@ -761,7 +761,7 @@ class PoeBot:
         self, amounts: Union[list[CostItem], CostItem], access_key: str, url: str
     ) -> bool:
         amounts = [amounts] if isinstance(amounts, CostItem) else amounts
-        amounts_dicts = [amount.model_dump() for amount in amounts]
+        amounts_dicts = [amount.dict() for amount in amounts]
         data = {"amounts": amounts_dicts, "access_key": access_key}
         try:
             async with (
@@ -1187,7 +1187,7 @@ def make_app(
                 )
                 sync_bot_settings(
                     bot_name=bot_obj.bot_name,
-                    settings=settings_response.model_dump(),
+                    settings=settings_response.dict(),
                     access_key=bot_obj.access_key,
                 )
             except Exception as e:

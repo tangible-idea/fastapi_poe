@@ -1,7 +1,7 @@
 from typing import Any, Optional, Union
 
 from fastapi import Request
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, Field, validator
 from typing_extensions import Literal, TypeAlias
 
 Identifier: TypeAlias = str
@@ -39,7 +39,7 @@ class CostItem(BaseModel):
     amount_usd_milli_cents: int
     description: Optional[str] = None
 
-    @field_validator("amount_usd_milli_cents", mode="before")
+    @validator("amount_usd_milli_cents", pre=True)
     def validate_amount_is_int(cls, v: Union[int, str, float]) -> int:
         if not isinstance(v, int):
             raise ValueError(
@@ -236,7 +236,8 @@ class SettingsResponse(BaseModel):
 
     """
 
-    model_config = ConfigDict(extra="forbid")
+    class Config:
+        extra = "forbid"
 
     response_version: Optional[int] = 1
     context_clear_window_secs: Optional[int] = None  # deprecated
@@ -287,8 +288,9 @@ class DataResponse(BaseModel):
 
     """
 
-    model_config = ConfigDict(extra="forbid")
-
+    class Config:
+        extra = "forbid"
+        
     metadata: str
 
 
@@ -313,8 +315,9 @@ class PartialResponse(BaseModel):
 
     # These objects are usually instantiated in user code, so we
     # disallow extra fields to prevent mistakes.
-    model_config = ConfigDict(extra="forbid")
-
+    class Config:
+        extra = "forbid"
+        
     text: str
     """Partial response text.
 
