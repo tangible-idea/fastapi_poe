@@ -4,11 +4,22 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
+import os
 
 # Import routers
 from instagram import router as instagram_router
 from poe_endpoints import router as poe_router
 from openai_endpoints import router as openai_router
+
+from fastapi import FastAPI
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn=os.environ.get("SENTRY_DSN"),
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
 
 app = FastAPI()
 
@@ -39,6 +50,10 @@ def health():
 async def root():
     """Root endpoint"""
     return JSONResponse(content={"message": "Hello world!"}, status_code=200)
+
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
 
 # Include Routers
 app.include_router(instagram_router)
